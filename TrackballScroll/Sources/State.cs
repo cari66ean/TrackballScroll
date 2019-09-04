@@ -93,7 +93,7 @@ namespace TrackballScroll
         public override Result Process(IntPtr wParam, WinAPI.MSLLHOOKSTRUCT llHookStruct, Properties.Settings settings)
         {
             if (WinAPI.MouseMessages.WM_XBUTTONUP == (WinAPI.MouseMessages)wParam)
-                { // DOWN->NORMAL: middle button click
+            { // DOWN->NORMAL: middle button click
                 var xbutton = GetXButton(llHookStruct.mouseData);
 
                 if (!(settings.useX1 && xbutton == 1) && !(settings.useX2 && xbutton == 2))
@@ -166,6 +166,7 @@ namespace TrackballScroll
                 {
                     return new Result(this);
                 }
+
                 return new Result(new StateNormal(), CallNextHook.FALSE, null);
             }
 
@@ -189,7 +190,7 @@ namespace TrackballScroll
 
                 if (Xcount < -X_THRESHOLD || Xcount > X_THRESHOLD)
                 {
-                    uint mouseData = (uint)((settings.reverseHorizontalScroll?-1:1) * WinAPI.WHEEL_DELTA * Xcount / X_THRESHOLD);
+                    uint mouseData = (uint)((settings.reverseHorizontalScroll ? -1 : 1) * WinAPI.WHEEL_DELTA * Xcount / X_THRESHOLD);
                     x = Xcount - (Xcount / X_THRESHOLD) * X_THRESHOLD; // integer division
                     if (settings.preferAxis)
                     {
@@ -200,7 +201,7 @@ namespace TrackballScroll
 
                 if (Ycount < -Y_THRESHOLD || Ycount > Y_THRESHOLD)
                 {
-                    uint mouseData = (uint)( (settings.reverseVerticalScroll?1:-1) * WinAPI.WHEEL_DELTA * Ycount / Y_THRESHOLD);
+                    uint mouseData = (uint)((settings.reverseVerticalScroll ? 1 : -1) * WinAPI.WHEEL_DELTA * Ycount / Y_THRESHOLD);
                     if (settings.preferAxis)
                     {
                         x = 0;
