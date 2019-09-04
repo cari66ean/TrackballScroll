@@ -1,4 +1,4 @@
-Modified TrackballScroll to allow both toggling and holding scroll mode
+Modified TrackballScroll allowing both toggle and hold
 ===============
 
 This is a fork of the original TrackballScroll from Seelge found at https://github.com/Seelge/TrackballScroll and adds the following features when "Emulate middle button when not scrolling" is deactivated via the context menu:
