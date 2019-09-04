@@ -68,6 +68,17 @@ namespace TrackballScroll
 
                 return new Result(new StateDown(llHookStruct.pt), CallNextHook.FALSE, null);
             }
+
+            if (WinAPI.MouseMessages.WM_XBUTTONUP == (WinAPI.MouseMessages)wParam)
+            { // NORMAL->UP: reset to normal state
+                var xbutton = GetXButton(llHookStruct.mouseData);
+                if (!(settings.useX1 && xbutton == 1) && !(settings.useX2 && xbutton == 2))
+                {
+                    return new Result(this);
+                }
+
+                return new Result(new StateNormal(), CallNextHook.FALSE, null);
+            }
             return new Result(this);
         }
     }
@@ -82,7 +93,7 @@ namespace TrackballScroll
         public override Result Process(IntPtr wParam, WinAPI.MSLLHOOKSTRUCT llHookStruct, Properties.Settings settings)
         {
             if (WinAPI.MouseMessages.WM_XBUTTONUP == (WinAPI.MouseMessages)wParam)
-            { // DOWN->NORMAL: middle button click
+                { // DOWN->NORMAL: middle button click
                 var xbutton = GetXButton(llHookStruct.mouseData);
 
                 if (!(settings.useX1 && xbutton == 1) && !(settings.useX2 && xbutton == 2))
@@ -92,17 +103,19 @@ namespace TrackballScroll
 
                 if (!settings.emulateMiddleButton)
                 {
-                    return new Result(new StateNormal(), CallNextHook.FALSE, null);
+                    //return new Result(new StateNormal(), CallNextHook.FALSE, null);
+                    return new Result(new StateScroll(Origin, 0, 0), CallNextHook.FALSE, null);
                 }
 
                 var input = InputMiddleClick(llHookStruct.pt);
                 return new Result(new StateNormal(), CallNextHook.FALSE, input);
             }
+
             else if (WinAPI.MouseMessages.WM_MOUSEMOVE == (WinAPI.MouseMessages)wParam)
             { // DOWN->SCROLL                
                 return new Result(new StateScroll(Origin, 0, 0), CallNextHook.FALSE, null);
             }
-            return new Result(this);
+            return new Result(null);
         }
 
         [Pure]
@@ -146,8 +159,18 @@ namespace TrackballScroll
         [Pure]
         public override Result Process(IntPtr wParam, WinAPI.MSLLHOOKSTRUCT llHookStruct, Properties.Settings settings)
         {
-            if (WinAPI.MouseMessages.WM_XBUTTONUP == (WinAPI.MouseMessages)wParam)
+            if (WinAPI.MouseMessages.WM_XBUTTONDOWN == (WinAPI.MouseMessages)wParam)
             { // SCROLL->NORMAL
+                var xbutton = GetXButton(llHookStruct.mouseData);
+                if (!(settings.useX1 && xbutton == 1) && !(settings.useX2 && xbutton == 2))
+                {
+                    return new Result(this);
+                }
+                return new Result(new StateNormal(), CallNextHook.FALSE, null);
+            }
+
+            if (WinAPI.MouseMessages.WM_XBUTTONUP == (WinAPI.MouseMessages)wParam)
+            { // SCROLL->SCROLL
                 var xbutton = GetXButton(llHookStruct.mouseData);
                 if (!(settings.useX1 && xbutton == 1) && !(settings.useX2 && xbutton == 2))
                 {
